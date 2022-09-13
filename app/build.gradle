@@ -33,7 +33,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    implementation ('org.web3j:core:4.8.7-android')
+    implementation "org.web3j:core:4.9.0"
+    implementation "org.web3j:web3j-evm:4.9.0"
+    implementation "org.hyperledger.besu.internal:core:21.10.3"
 
     implementation 'com.google.code.gson:gson:2.9.1'
 }

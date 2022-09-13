@@ -38,6 +38,18 @@
         android:textIsSelectable="true"/>
 
     <Button
+        android:id="@+id/btn_get_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="查询余额"/>
+
+    <TextView
+        android:id="@+id/tv_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
         android:id="@+id/btn_import_wallet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
