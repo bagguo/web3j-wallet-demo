@@ -15,7 +15,6 @@ import com.bob.walletdemo.util.Util;
 
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
@@ -27,8 +26,10 @@ import java.io.IOException;
 
 public class ImportWalletActivity extends BaseActivity {
 
+    private static final String TAG = ImportWalletActivity.class.getSimpleName();
+
     EditText editText;
-    TextView mnemonicAddressTv;
+    TextView addressTv;
     TextView privateKeyAddressTv;
 
     @Override
@@ -37,7 +38,7 @@ public class ImportWalletActivity extends BaseActivity {
         setContentView(R.layout.activity_import_wallet);
 
         editText = findViewById(R.id.et);
-        mnemonicAddressTv = findViewById(R.id.tv_address);
+        addressTv = findViewById(R.id.tv_address);
 
         Button mnemonicImportBtn = findViewById(R.id.btn_import_mnemonic);
         mnemonicImportBtn.setOnClickListener(new View.OnClickListener() {
@@ -61,20 +62,12 @@ public class ImportWalletActivity extends BaseActivity {
         keystoreImportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String filePath = ETHWalletUtil.PATH + File.separator + "UTC--2022-09-09T10-45-12.970000000Z--1b52a7ab3a440ce04cab85a858f878b9b902a1a0.json";
-                importWalletByKeyStore(filePath);
+                String filePath = ETHWalletUtil.PATH + File.separator + "UTC--2022-09-09T10-30-36.662000000Z--5c532e2b3cbd35bf97df7f99ae15e6e278ac6cf0.json";
+                String address = ETHWalletUtil.loadJsonCredentials(filePath);
+                addressTv.setText(address);
+                Toast.makeText(ImportWalletActivity.this, "导入成功", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void importWalletByKeyStore(String filePath) {
-//        Credentials credentials = null;
-//         WalletFile walletFile = new Gson().fromJson(keystore, WalletFile.class);
-//        credentials = Credentials.create(Wallet.decrypt(ETHWalletUtil.PASSWORD, walletFile));
-//
-//        if (credentials != null) {
-//            generateWallet(generateNewWalletName(), pwd, credentials.getEcKeyPair());
-//        }
     }
 
     //助记词导入钱包
@@ -85,7 +78,7 @@ public class ImportWalletActivity extends BaseActivity {
 
             String address = ETHWalletUtil.getAddressFromWalletFileName(wallet.getFilename());
             Toast.makeText(ImportWalletActivity.this, "导入成功", Toast.LENGTH_LONG).show();
-            mnemonicAddressTv.setText(address);
+            addressTv.setText(address);
         } catch (CipherException | IOException e) {
             e.printStackTrace();
         }

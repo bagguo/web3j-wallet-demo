@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="私钥导入" />
+            android:text="json导入" />
     </RelativeLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
