@@ -25,6 +25,8 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
@@ -32,6 +34,7 @@ import org.web3j.protocol.http.HttpService;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends BaseActivity {
@@ -68,8 +71,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 String address = connectWallet();
-//                BigInteger balance = getAccountBalance(address);
-//                balanceTv.setText((CharSequence) balance);
+//                String balance = getAccountBalance(address);
+//                balanceTv.setText(balance);
             }
         });
 
@@ -80,7 +83,14 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        findViewById(R.id.btn_call).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
     }
+
 
     private static ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
 
@@ -130,7 +140,7 @@ public class MainActivity extends BaseActivity {
         Bip39Wallet wallet;
         String address = "";
         try {
-            String mnemonic = "wood table canoe submit fold page dress auto tell biology appear recipe";
+            String mnemonic = "wood table canoe submit fold page dress auto tell biology appear recipe";//my ganache account
             wallet = WalletUtils.generateBip39WalletFromMnemonic(ETHWalletUtil.PASSWORD, mnemonic, ETHWalletUtil.PATH);
 
             address = ETHWalletUtil.getAddressFromWalletFileName(wallet.getFilename());
@@ -143,18 +153,31 @@ public class MainActivity extends BaseActivity {
     }
 
     //获得某个账户余额，大整数类型
-    public BigInteger getAccountBalance(String contractAddress) {
-        EthGetBalance result = new EthGetBalance();
+    public String getAccountBalance(String contractAddress) {
+
+        //获取指定钱包的以太币余额
+        BigInteger integer= null;
         try {
-            web3j.ethGetBalance(contractAddress,
-                            DefaultBlockParameter.valueOf("latest"))
-                    .sendAsync()
-                    .get();
-        } catch (Exception e) {
+            Request<?, EthGetBalance> request = web3j.ethGetBalance(contractAddress, DefaultBlockParameterName.LATEST);
+            CompletableFuture<EthGetBalance> ethGetBalance = request.sendAsync();
+            integer = ethGetBalance.get().getBalance();
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-//        return null;
-        return result.getBalance();  //报错：org.web3j.exceptions.MessageDecodingException: Value must be in format 0x[1-9]+[0-9]* or 0x0
+
+
+        //eth默认会部18个0这里处理比较随意
+        String decimal = ETHWalletUtil.toDecimal(18,integer);
+        System.out.println(decimal);
+
+
+        //因为是按18位来算的,所有在倒数18位前面加 小数点
+		/*String str = integer.toString();
+		String decimal = toDecimal(18,str);
+		System.out.println(decimal);*/
+
+        return decimal;
+
     }
 
 }
