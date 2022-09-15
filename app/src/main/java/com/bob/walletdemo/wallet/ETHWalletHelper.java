@@ -8,6 +8,7 @@ import android.util.Log;
 
 
 import com.bob.walletdemo.util.FileUtil;
+import com.bob.walletdemo.util.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.web3j.abi.FunctionEncoder;
@@ -42,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
@@ -55,7 +55,8 @@ public class ETHWalletHelper {
     public static final String MNEMONIC = "wood table canoe submit fold page dress auto tell biology appear recipe";//my ganache account
     public static final String PASSWORD = "111111";
 
-    private static final String CONTRACT_ADDRESS = "0x7ACa5Da559a60ba12c1379ad5eADA2C39e7C6644";
+    public static final String ACCOUNT1 = "0x48F6e751464fcf57632bc3dd5E89Fc5142EEdD1c";
+    public static final String CONTRACT_ADDRESS = "0x7ACa5Da559a60ba12c1379ad5eADA2C39e7C6644";
     private static final String GAS_LIMIT = "3000000";
 
     public static File PATH = new File(Environment.getExternalStorageDirectory().getPath());
@@ -207,9 +208,11 @@ public class ETHWalletHelper {
         // 格式转换 WEI(币种单位) --> ETHER
         String balance = "";
         if (ethGetBlance != null) {
-            balance = Convert.fromWei(new BigDecimal(ethGetBlance.getBalance()), Convert.Unit.ETHER).toPlainString();
+            BigInteger balance1 = ethGetBlance.getBalance();
+            Log.d(TAG, "getAccountBalance: ====:" + balance1);
+            balance = Convert.fromWei(new BigDecimal(balance1), Convert.Unit.ETHER).toPlainString();
         }
-
+        Log.d(TAG, "getAccountBalance: ====balance:" + balance);
         return balance;
 
     }

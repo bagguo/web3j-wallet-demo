@@ -12,7 +12,6 @@ import com.bob.walletdemo.R;
 import com.bob.walletdemo.activity.base.BaseActivity;
 import com.bob.walletdemo.wallet.ETHWalletHelper;
 import com.bob.walletdemo.util.StringUtil;
-import com.bob.walletdemo.util.Util;
 
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
@@ -87,7 +86,7 @@ public class ImportWalletActivity extends BaseActivity {
 
     //私钥导入钱包
     private void importWalletByPrivateKey(String privateKey) {
-        String hexPrivateKey = Util.bigInteger2Hex(privateKey);
+        String hexPrivateKey = StringUtil.bigInteger2Hex(privateKey);
         ECKeyPair ecKeyPair = ECKeyPair.create(Numeric.toBigInt(hexPrivateKey));
 
         WalletFile wallet;

@@ -9,6 +9,16 @@ import java.math.RoundingMode;
 @SuppressWarnings("unused")
 public class StringUtil {
 
+    public static String bigInteger2Hex(String bigIntegerString) {
+        BigInteger bigInteger = new BigInteger(bigIntegerString, 10);
+        return bigInteger.toString(16);
+    }
+
+    public static String bigInteger2String(String bigIntegerString) {
+        BigInteger bigInteger = new BigInteger(bigIntegerString, 10);
+        return bigInteger.toString(10);
+    }
+
     /**
      * 转换成符合 decimal 的数值
      */

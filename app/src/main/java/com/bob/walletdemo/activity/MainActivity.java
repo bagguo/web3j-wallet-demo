@@ -71,20 +71,20 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-//        TextView balanceTv = findViewById(R.id.tv_balance);
+        TextView balanceTv = findViewById(R.id.tv_balance);
         findViewById(R.id.btn_get_balance).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        String balance = ETHWalletHelper.getInstance().getAccountBalance(mAddress);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                balanceTv.setText(balance);
-//                            }
-//                        });
+                        String balance = ETHWalletHelper.getInstance().getAccountBalance(ETHWalletHelper.ACCOUNT1);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                balanceTv.setText(balance);
+                            }
+                        });
                     }
                 }).start();
             }
