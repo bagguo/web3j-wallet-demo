@@ -10,7 +10,8 @@ import android.widget.Toast;
 
 import com.bob.walletdemo.R;
 import com.bob.walletdemo.activity.base.BaseActivity;
-import com.bob.walletdemo.util.ETHWalletUtil;
+import com.bob.walletdemo.wallet.ETHWalletHelper;
+import com.bob.walletdemo.util.StringUtil;
 import com.bob.walletdemo.util.Util;
 
 import org.web3j.crypto.Bip39Wallet;
@@ -62,8 +63,8 @@ public class ImportWalletActivity extends BaseActivity {
         keystoreImportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String filePath = ETHWalletUtil.PATH + File.separator + "UTC--2022-09-09T10-30-36.662000000Z--5c532e2b3cbd35bf97df7f99ae15e6e278ac6cf0.json";
-                String address = ETHWalletUtil.loadJsonCredentials(filePath);
+                String filePath = ETHWalletHelper.PATH + File.separator + "UTC--2022-09-09T10-30-36.662000000Z--5c532e2b3cbd35bf97df7f99ae15e6e278ac6cf0.json";
+                String address = ETHWalletHelper.loadJsonCredentials(filePath);
                 addressTv.setText(address);
                 Toast.makeText(ImportWalletActivity.this, "导入成功", Toast.LENGTH_LONG).show();
             }
@@ -74,9 +75,9 @@ public class ImportWalletActivity extends BaseActivity {
     private void importWalletByMnemonic(String mnemonic) {
         Bip39Wallet wallet;
         try {
-            wallet = WalletUtils.generateBip39WalletFromMnemonic(ETHWalletUtil.PASSWORD, mnemonic, ETHWalletUtil.PATH);
+            wallet = WalletUtils.generateBip39WalletFromMnemonic(ETHWalletHelper.PASSWORD, mnemonic, ETHWalletHelper.PATH);
 
-            String address = ETHWalletUtil.getAddressFromWalletFileName(wallet.getFilename());
+            String address = StringUtil.getAddressFromWalletJsonFileName(wallet.getFilename());
             Toast.makeText(ImportWalletActivity.this, "导入成功", Toast.LENGTH_LONG).show();
             addressTv.setText(address);
         } catch (CipherException | IOException e) {
@@ -91,7 +92,7 @@ public class ImportWalletActivity extends BaseActivity {
 
         WalletFile wallet;
         try {
-            wallet = Wallet.createStandard(ETHWalletUtil.PASSWORD, ecKeyPair);
+            wallet = Wallet.createStandard(ETHWalletHelper.PASSWORD, ecKeyPair);
 
             Toast.makeText(ImportWalletActivity.this, "导入成功", Toast.LENGTH_LONG).show();
             privateKeyAddressTv.setText(wallet.getAddress());

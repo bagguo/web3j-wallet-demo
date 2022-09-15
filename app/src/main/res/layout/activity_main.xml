@@ -64,9 +64,21 @@
         android:text="导入钱包"/>
 
     <Button
-        android:id="@+id/btn_call"
+        android:id="@+id/btn_store"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="调用合约"/>
+        android:text="store"/>
+
+    <Button
+        android:id="@+id/btn_retrieve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="retrieve"/>
+
+    <TextView
+        android:id="@+id/tv_call_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </androidx.appcompat.widget.LinearLayoutCompat>
