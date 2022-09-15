@@ -2,6 +2,7 @@ package com.bob.walletdemo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -30,9 +31,11 @@ import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Convert;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -42,6 +45,7 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     Bip39Wallet mWallet = null;
+    private String mAddress;
 
 
     @Override
@@ -66,13 +70,24 @@ public class MainActivity extends BaseActivity {
                 privateKeyTv.setText(ETHWalletUtil.getPrivateKey(mWallet))
         );
 
+        findViewById(R.id.btn_connect_ganache).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAddress = connectWallet();
+            }
+        });
+
         TextView balanceTv = findViewById(R.id.tv_balance);
         findViewById(R.id.btn_get_balance).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String address = connectWallet();
-//                String balance = getAccountBalance(address);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String balance = getAccountBalance(mAddress);
 //                balanceTv.setText(balance);
+                    }
+                }).start();
             }
         });
 
@@ -153,30 +168,26 @@ public class MainActivity extends BaseActivity {
     }
 
     //获得某个账户余额，大整数类型
-    public String getAccountBalance(String contractAddress) {
+    public String getAccountBalance(String address) {
+
+        if (web3j ==null) return "";
+        if (TextUtils.isEmpty(address)) return "";
 
         //获取指定钱包的以太币余额
-        BigInteger integer= null;
+        EthGetBalance ethGetBlance = null;
         try {
-            Request<?, EthGetBalance> request = web3j.ethGetBalance(contractAddress, DefaultBlockParameterName.LATEST);
-            CompletableFuture<EthGetBalance> ethGetBalance = request.sendAsync();
-            integer = ethGetBalance.get().getBalance();
-        } catch (ExecutionException | InterruptedException e) {
+            ethGetBlance = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // 格式转换 WEI(币种单位) --> ETHER
+        String balance = "";
+        if (ethGetBlance != null) {
+            balance = Convert.fromWei(new BigDecimal(ethGetBlance.getBalance()), Convert.Unit.ETHER).toPlainString();
+        }
 
-        //eth默认会部18个0这里处理比较随意
-        String decimal = ETHWalletUtil.toDecimal(18,integer);
-        System.out.println(decimal);
-
-
-        //因为是按18位来算的,所有在倒数18位前面加 小数点
-		/*String str = integer.toString();
-		String decimal = toDecimal(18,str);
-		System.out.println(decimal);*/
-
-        return decimal;
+        return balance;
 
     }
 
